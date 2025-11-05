@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: internal_transfers_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: internal_transfers
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d internal_transfers"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  migrator:
+    image: internal-transfers-app:latest
+    container_name: internal_transfers_migrator
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/internal_transfers
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    entrypoint: ["sh","-c","java -jar /app/database.jar"]
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: internal-transfers-app:latest
+    container_name: internal_transfers_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/internal_transfers
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+volumes:
+  pgdata:
