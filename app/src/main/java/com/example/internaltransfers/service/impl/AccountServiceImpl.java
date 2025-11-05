@@ -6,11 +6,10 @@ import com.example.internaltransfers.exception.AccountAlreadyExistException;
 import com.example.internaltransfers.exception.AccountNotFoundException;
 import com.example.internaltransfers.repository.AccountRepository;
 import com.example.internaltransfers.service.AccountService;
+import java.math.BigDecimal;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 
 @Service
 @Log4j2

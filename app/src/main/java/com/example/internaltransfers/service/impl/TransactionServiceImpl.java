@@ -8,11 +8,10 @@ import com.example.internaltransfers.exception.InsufficientFundsException;
 import com.example.internaltransfers.repository.AccountRepository;
 import com.example.internaltransfers.repository.TransactionLogRepository;
 import com.example.internaltransfers.service.TransactionService;
+import java.math.BigDecimal;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 
 @Service
 @Log4j2
